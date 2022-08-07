@@ -1,0 +1,14 @@
+{
+  "name": "parser",
+  "version": "1.0.0",
+  "description": "parser project",
+  "main": "app.js",
+  "scripts": {
+    "start": " node ./app.js"
+  },
+  "author": "charlie",
+  "license": "MIT",
+  "dependencies": {
+    "assert": "^2.0.0"
+  }
+}
