@@ -11,4 +11,4 @@ Right now the code can parse the following syntax:
 - Function declaration `func foo() {}` and function call `foo()`
 - control flow like while、for、do-while
 
-class declaration will support
+class declaration will support soon....
