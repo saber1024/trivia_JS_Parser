@@ -59,6 +59,8 @@ class Parser {
         return this.ForLoopStatement();
       case "CompareOperator":
         return this.compareStatement();
+      case "class":
+        return this.ClassStateMent();
       case "func":
         return this.functionStatement();
       case "RETURN":
@@ -71,6 +73,68 @@ class Parser {
 
   comapreOperator() {
     return this._eat("CompareOperator").value;
+  }
+
+  /**
+   * Class Statement
+   */
+  ClassStateMent() {
+    this._eat("class");
+
+    const name = this._Identifire();
+    const superClass =
+      this._lookahead.type === "extends" ? this._SuperClassStatement() : null;
+    this._eat("{");
+    const classVariants =
+      this._lookahead.type == "let" || this._lookahead.type == "var"
+        ? this._ClassProperties()
+        : [];
+    const classFunctions =
+      this._lookahead.type == "func" ? this._ClassFunctions() : [];
+    this._eat("}");
+
+    return {
+      type: "ClassExpression",
+      name,
+      superClass,
+      classVariants,
+      classFunctions,
+    };
+  }
+  /**
+   * class Helper _SuperClassName
+   * @returns ClassName
+   */
+  _SuperClassStatement() {
+    this._eat("extends");
+    return this._Identifire().name;
+  }
+  /**
+   * class Helper _ClassProperties
+   * @returns Class Properties
+   */
+  _ClassProperties() {
+    var variants = [];
+
+    do {
+      const variant =
+        this._lookahead.type === "var"
+          ? this.VariableStatementVar()
+          : this.VariableStatement();
+      variants.push(variant);
+    } while (this._lookahead.type === "var" || this._lookahead.type === "let");
+    return variants;
+  }
+  /**
+   * class Helper _ClassFunctions
+   * @returns Class Functions
+   */
+  _ClassFunctions() {
+    var functions = [];
+    do {
+      functions.push(this.functionStatement());
+    } while (this._lookahead.type == "func");
+    return functions;
   }
 
   /**
@@ -130,7 +194,7 @@ class Parser {
   ForLoopStatement() {
     this._eat("for");
     this._eat("(");
-    const init = this._lookahead.type !== ";" ? this.forStatementInit() : null;
+    const init = this._lookahead.type !== ";" ? this._forStatementInit() : null;
     this._eat(";");
     const test = this._lookahead.type !== ";" ? this.Expression() : null;
     this._eat(";");
@@ -267,6 +331,22 @@ class Parser {
     return this._LogicalExpression("LOGIC_OR_OPERATOR", "LogicalAndExpression");
   }
 
+  thisExpression() {
+    this._eat("this");
+    return {
+      type: "thisExpression",
+    };
+  }
+
+  newExpression() {
+    this._eat("new");
+    return {
+      type: "NewExpression",
+      callee: this.MemberExpression(),
+      arguments: this._Arguments(),
+    };
+  }
+
   /**
    *
    * @returns AssigMentExpression
@@ -303,6 +383,10 @@ class Parser {
   }
 
   CallMemebrExpression() {
+    if (this._lookahead.type == "super") {
+      return this._CallExpression(this._Super());
+    }
+
     const member = this.MemberExpression();
 
     if (this._lookahead.type == "(") {
@@ -387,6 +471,10 @@ class Parser {
         return this.ParenthesesLiteral();
       case "IDENTIFIRE":
         return this._Identifire();
+      case "this":
+        return this.thisExpression();
+      case "new":
+        return this.newExpression();
       default:
         return this.leftHandSideExprssion();
     }
@@ -592,6 +680,13 @@ class Parser {
       argumentList.push(this.AssigMentExpression());
     } while (this._lookahead.type === "," && this._eat(","));
     return argumentList;
+  }
+
+  _Super() {
+    this._eat("super");
+    return {
+      type: "Super",
+    };
   }
 }
 

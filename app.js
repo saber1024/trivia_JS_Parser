@@ -10,6 +10,7 @@ const tests = [
   require("./test/logical_test.js"),
   require("./test/unaryExpression_test.js"),
   require("./test/while_test.js"),
+  require("./test/classExpression_test.js"),
 ];
 const { Parser } = require("./src/Parser.js");
 const assert = require("assert");
@@ -27,18 +28,44 @@ function exec() {
   console.log("passed!!!");
 }
 
-// exec();
+exec();
 
-manualTest();
+// manualTest();
 function manualTest() {
   const statement = `
-   func foo(){
-      a + b;
+   class Foo extends bar{
+      
+      var name;
+      var age;
+
+      func constructor(name, age){
+        this.name = name;
+        this.age = age;
+      }
+    
+      func foo(){
+         
+      }
+      
+      func bar(){
+
+      }
    }
 
-   foo(); 
+   class Bar extends Foo{
+       func constructor(name, age){
+          super(name, age);
+       }
 
-   console.log(foo());
+      func foo(){
+          return this.name + this.age;   
+      }
+   }
+
+   let a = new Foo("jennie" , 24);
+   let b = new Bar("jisoo", 25);
+
+   b.foo();
 `;
 
   const obj = parser.parse(statement);

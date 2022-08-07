@@ -11,6 +11,10 @@ const Spec = [
   [/^\./, "."],
   [/^\[/, "["],
   [/^\]/, "]"],
+  [/^\bclass\b/, "class"],
+  [/^\bextends\b/, "extends"],
+  [/^\bthis\b/, "this"],
+  [/^\bsuper\b/, "super"],
   [/^\bfunc\b/, "func"],
   [/^\blet\b/, "let"],
   [/^\bvar\b/, "var"],
@@ -23,6 +27,7 @@ const Spec = [
   [/^\bfalse\b/, "false"],
   [/^\bnull\b/, "null"],
   [/^\breturn\b/, "RETURN"],
+  [/^\bnew\b/, "new"],
 
   [/^\breturn\b/, "RETURN"],
 
