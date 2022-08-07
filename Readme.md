@@ -10,5 +10,4 @@ Right now the code can parse the following syntax:
 - Variant declaration like `let a = 4;`
 - Function declaration `func foo() {}` and function call `foo()`
 - control flow like while、for、do-while
-
-class declaration will support soon....
+- Class declaration and initialize
